@@ -4,37 +4,36 @@ On-Behalf-Of (OBO) token exchange to enable middle-tier services to preserve use
 
 The client sends a POST request to `http://localhost:3000/obo-flow` with accessToken for the first API in the body. The server uses this accessToken to get a new accessToken for the second API (downstream API).
 
-Access Token:
+Downstream Access Token:
 
-```
+```json
 {
-  "myAccessTokenClaim": "myValue",
-  "iss": "https://dev-5gm1mr1z8nbmuhv7.us.auth0.com/",
-  "sub": "auth0|6985132071f9fb6d9bce29b8",
+  "iss": "https://dev-8jc54ej0kls418wv.us.auth0.com/",
+  "sub": "auth0|6a5644849b95a281210f73de",
   "aud": "https://obo-flow-api-2/",
-  "iat": 1783996193,
-  "exp": 1784082593,
+  "iat": 1784052407,
+  "exp": 1784138807,
   "act": {
-    "sub": "Xk51p6Gr0QJGx8TS3fbfWaPjG2Aja4pD",
+    "sub": "Geht8foVugp9G0qyhTnP8tMVpDD4eLgb",
     "act": {
-      "sub": "7QJm25lYoRzYk55gQzkrAHeDi4OH6Oup"
+      "sub": "iqc51Cf3AslsCjhtiANfANu2meIGG9gd"
     }
   },
-  "azp": "Xk51p6Gr0QJGx8TS3fbfWaPjG2Aja4pD"
+  "azp": "Geht8foVugp9G0qyhTnP8tMVpDD4eLgb"
 }
 ```
 
 ## Getting Started
 
 Run the server:
-```
+```bash
 cd server/
 npm i
 npm start
 ```
 
 Run the client:
-```
+```bash
 cd client/
 npm i
 npm start
