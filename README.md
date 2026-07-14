@@ -47,3 +47,4 @@ Check console output for OBO Flow Response JSON object containing downstreamAcce
 
 ![System Design](docs/system-design.svg)
 
+Diagram created using [Excalidraw](https://excalidraw.com/).
