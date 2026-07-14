@@ -1,6 +1,6 @@
-# Auth0 On-Behalf-Of (OBO) Token Exchange
+# Auth0 On-Behalf-Of (OBO) Token Exchange Sample App
 
-On-Behalf-Of (OBO) token exchange to enable middle-tier services to preserve user identity and permissions when calling downstream APIs.
+Sample app for On-Behalf-Of (OBO) token exchange to enable middle-tier services to preserve user identity and permissions when calling downstream APIs.
 
 The client sends a POST request to `http://localhost:3000/obo-flow` with accessToken for the first API in the body. The server uses this accessToken to get a new accessToken for the second API (downstream API).
 
