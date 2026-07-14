@@ -9,9 +9,15 @@
   "main": "index.js",
   "scripts": {
     "deploy": "a0deploy import -c auth0-config.json -i auth0-tenant",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run --silent --coverage",
+    "test:watch": "vitest --silent"
   },
   "dependencies": {
     "auth0-deploy-cli": "^8.40.0"
+  },
+  "devDependencies": {
+    "@auth0/actions": "^0.26.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "vitest": "^4.1.10"
   }
 }

@@ -1,0 +1,10 @@
+name: "Test Auth0 OBO Flow"
+description: "Tests Auth0 OBO Flow Action"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run tests
+      shell: bash
+      run: npm test
+      working-directory: ./auth0-tenant

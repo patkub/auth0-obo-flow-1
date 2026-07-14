@@ -8,3 +8,8 @@ Deploy Auth0 configuration.
 ```bash
 npm run deploy
 ```
+
+Test Auth0 configuration
+```bash
+npm test
+```

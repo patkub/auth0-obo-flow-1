@@ -1,0 +1,39 @@
+# Build
+#   - Tests Auth0 Passwordless Action
+#   - Validates Terraform configuration
+
+name: Build
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  # Test Auth0 OBO Flow
+  obo-flow:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./auth0-tenant
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: "npm"
+          cache-dependency-path: './auth0-tenant/package-lock.json'
+
+      - name: Install dependencies
+        shell: bash
+        run: npm install
+
+      # Test Auth0 OBO Flow
+      - name: Test Auth0 OBO Flow
+        uses: ./.github/actions/test-obo-flow
+
