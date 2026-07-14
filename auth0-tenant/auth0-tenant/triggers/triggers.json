@@ -1,0 +1,8 @@
+{
+  "post-login": [
+    {
+      "action_name": "obo-flow",
+      "display_name": "obo-flow"
+    }
+  ]
+}
