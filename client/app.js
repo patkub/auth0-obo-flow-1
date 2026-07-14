@@ -82,6 +82,27 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
+async function callOBOFlow(accessToken) {
+  // Call On-Behalf-Of (OBO) token exchange
+  // POST request to http://localhost:3000/obo-flow with accessToken in body
+
+  let oboFlowResponse;
+  try {
+    const response = await fetch(import.meta.env.VITE_OBO_FLOW_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ accessToken: accessToken })
+    });
+    let oboFlowResponse = await response.json();
+    console.log('OBO Flow Response:', oboFlowResponse);
+    return oboFlowResponse;
+  } catch (error) {
+    console.error('Error calling OBO Flow:', error);
+  }
+}
+
 // Display user profile
 async function displayProfile() {
   try {
@@ -90,6 +111,9 @@ async function displayProfile() {
 
     // Get ID Token
     const idTokenClaims = await auth0Client.getIdTokenClaims();
+    console.log("ID Token:", {
+      'idToken': idTokenClaims.__raw,
+    });
     const idToken = parseJwt(idTokenClaims.__raw);
 
     // Get Access Token
@@ -99,22 +123,9 @@ async function displayProfile() {
     }
     const parsedAccessToken = accessToken ? parseJwt(accessToken) : null;
 
-    // call obo-flow
+    // Call On Behalf Of (OBO) Flow
     // POST request to http://localhost:3000/obo-flow with accessToken in body
-
-    try {
-      const response = await fetch('http://localhost:3000/obo-flow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ accessToken: accessToken })
-      });
-      const result = await response.json();
-      console.log('OBO Flow Response:', result);
-    } catch (error) {
-      console.error('Error calling OBO Flow:', error);
-    }
+    const oboFlowResponse = await callOBOFlow(accessToken);
 
     const placeholderImage = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110' viewBox='0 0 110 110'%3E%3Ccircle cx='55' cy='55' r='55' fill='%2363b3ed'/%3E%3Cpath d='M55 50c8.28 0 15-6.72 15-15s-6.72-15-15-15-15 6.72-15 15 6.72 15 15 15zm0 7.5c-10 0-30 5.02-30 15v3.75c0 2.07 1.68 3.75 3.75 3.75h52.5c2.07 0 3.75-1.68 3.75-3.75V72.5c0-9.98-20-15-30-15z' fill='%23fff'/%3E%3C/svg%3E`;
 
@@ -122,6 +133,10 @@ async function displayProfile() {
     const highlightedUser = hljs.highlight(`${JSON.stringify(user, null, 2)}`, {language: "json", ignoreIllegals: true}).value;
     const highlightedIDToken = hljs.highlight(`${JSON.stringify(idToken, null, 2)}`, {language: "json", ignoreIllegals: true}).value;
     const highlightedAccessToken = hljs.highlight(`${JSON.stringify(parsedAccessToken, null, 2)}`, {language: "json", ignoreIllegals: true}).value;
+
+    // OBO Flow display Downstream Access Token
+    const parsedOBOFlowDownstreamAccessToken = oboFlowResponse?.downstreamAccessToken?.accessToken ? parseJwt(oboFlowResponse?.downstreamAccessToken?.accessToken) : null;
+    const highlightedDownstreamAccessToken = hljs.highlight(`${JSON.stringify(parsedOBOFlowDownstreamAccessToken, null, 2)}`, {language: "json", ignoreIllegals: true}).value;
 
     let profileContent = `
       <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
@@ -168,6 +183,13 @@ async function displayProfile() {
           overflow-wrap: anywhere;
           white-space: pre-wrap;
         "><code>${highlightedAccessToken}</code></pre>
+      </div>
+      <div style="margin-bottom: 0.5rem;">
+        <h2 class="profile-section-title">OBO Flow Downstream Access Token</h2>
+        <pre style="
+          overflow-wrap: anywhere;
+          white-space: pre-wrap;
+        "><code>${highlightedDownstreamAccessToken}</code></pre>
       </div>
     `;
 

@@ -10,6 +10,7 @@ VITE_AUTH0_DOMAIN=
 VITE_AUTH0_CLIENT_ID=
 # required to decode Access Token
 VITE_API_IDENTIFIER_URI=
+VITE_OBO_FLOW_ENDPOINT=http://localhost:3000/obo-flow
 ```
 
 Run
