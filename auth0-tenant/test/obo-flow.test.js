@@ -2,10 +2,10 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
-import { onExecutePostLogin, onContinuePostLogin } from "../auth0-tenant/actions/obo-flow/code.js";
+import { onExecutePostLogin } from "../auth0-tenant/actions/obo-flow/code.js";
 
 describe("OBO Flow", () => {
-  let consoleMock;
+  let _consoleMock;
 
   /** @type {Event} */
   let event;
@@ -15,8 +15,8 @@ describe("OBO Flow", () => {
 
   beforeEach(() => {
     // Spy on console.log to capture its output for assertions
-    consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
-    
+    _consoleMock = vi.spyOn(console, "log").mockImplementation(() => {});
+
     // Mock Auth0 Event and API objects
     event = {
       transaction: {
@@ -25,8 +25,7 @@ describe("OBO Flow", () => {
       },
     };
 
-    api = {
-    };
+    api = {};
   });
 
   afterEach(() => {
@@ -36,7 +35,7 @@ describe("OBO Flow", () => {
   it("Should handle oauth2-token-exchange flow", async () => {
     // Prepare
     event.transaction.actor = "actor-id";
-    event.transaction.protocol = 'oauth2-token-exchange';
+    event.transaction.protocol = "oauth2-token-exchange";
 
     // Act
     await onExecutePostLogin(event, api);
@@ -49,7 +48,7 @@ describe("OBO Flow", () => {
 
   it("Should no-op other flows", async () => {
     // Prepare
-    event.transaction.protocol = '';
+    event.transaction.protocol = "";
 
     // Act
     await onExecutePostLogin(event, api);

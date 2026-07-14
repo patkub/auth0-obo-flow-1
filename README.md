@@ -4,6 +4,17 @@ Sample app for On-Behalf-Of (OBO) token exchange to enable middle-tier services 
 
 The client sends a POST request to `http://localhost:3000/obo-flow` with accessToken for the first API in the body. The server uses this accessToken to get a new accessToken for the second API (downstream API).
 
+## Getting Started
+
+Setup
+- [Deploy Auth0 Configuration](./auth0-tenant/README.md)
+- [Run the server](./server/README.md)
+- [Run the client](./client/README.md)
+
+Open [http://localhost:5173/](http://localhost:5173/) and login.
+
+Check console output for OBO Flow Response JSON object containing downstreamAccessToken. Decode with [jwt.io](https://www.jwt.io/).
+
 Downstream Access Token:
 
 ```json
@@ -22,26 +33,6 @@ Downstream Access Token:
   "azp": "Geht8foVugp9G0qyhTnP8tMVpDD4eLgb"
 }
 ```
-
-## Getting Started
-
-Run the server:
-```bash
-cd server/
-npm i
-npm start
-```
-
-Run the client:
-```bash
-cd client/
-npm i
-npm start
-```
-
-Open [http://localhost:5173/](http://localhost:5173/) and login.
-
-Check console output for OBO Flow Response JSON object containing downstreamAccessToken. Decode with [jwt.io](https://www.jwt.io/).
 
 ## System Design
 

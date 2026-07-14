@@ -19,9 +19,7 @@
   "callbacks": [],
   "sso": true,
   "token_exchange": {
-    "allow_any_profile_of_type": [
-      "on_behalf_of_token_exchange"
-    ]
+    "allow_any_profile_of_type": ["on_behalf_of_token_exchange"]
   },
   "jwt_configuration": {
     "alg": "RS256",

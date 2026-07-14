@@ -5,10 +5,14 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "deploy": "a0deploy import -c auth0-config.json -i auth0-tenant",
+    "lint": "biome lint --write --unsafe",
+    "lint:check": "biome lint",
+    "format": "biome format --write",
+    "format:check": "biome format",
     "test": "vitest run --silent --coverage",
     "test:watch": "vitest --silent"
   },
@@ -17,6 +21,7 @@
   },
   "devDependencies": {
     "@auth0/actions": "^0.26.0",
+    "@biomejs/biome": "^2.5.3",
     "@vitest/coverage-v8": "^4.1.10",
     "vitest": "^4.1.10"
   }

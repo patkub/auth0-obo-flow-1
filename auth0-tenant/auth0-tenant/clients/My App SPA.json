@@ -15,9 +15,7 @@
     "rotation_type": "rotating"
   },
   "allowed_clients": [],
-  "callbacks": [
-    "http://localhost:5173"
-  ],
+  "callbacks": ["http://localhost:5173"],
   "native_social_login": {
     "apple": {
       "enabled": false
@@ -26,9 +24,7 @@
       "enabled": false
     }
   },
-  "allowed_logout_urls": [
-    "http://localhost:5173"
-  ],
+  "allowed_logout_urls": ["http://localhost:5173"],
   "jwt_configuration": {
     "alg": "RS256",
     "lifetime_in_seconds": 36000,
@@ -37,10 +33,6 @@
   "client_aliases": [],
   "token_endpoint_auth_method": "none",
   "app_type": "spa",
-  "grant_types": [
-    "authorization_code",
-    "implicit",
-    "refresh_token"
-  ],
+  "grant_types": ["authorization_code", "implicit", "refresh_token"],
   "custom_login_page_on": true
 }
