@@ -36,6 +36,6 @@ Downstream Access Token:
 
 ## System Design
 
-![System Design](docs/system-design.svg)
+![System Design](docs/system-design.png)
 
-Diagram created using [Excalidraw](https://excalidraw.com/).
+Diagram created using [Mermaid](https://mermaid.ai/open-source/).

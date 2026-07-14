@@ -1,0 +1,23 @@
+sequenceDiagram
+    box Client App
+        participant ClientSPA as Client SPA
+        participant ClientBE as Client Backend Server
+    end
+    box Auth0
+        participant Auth0SPA as Auth0 SPA Client
+        participant Auth0API1 as Auth0 API 1
+        participant Auth0API2 as Auth0 API 2
+    end
+
+    Note over ClientSPA: Handles user login with Auth0
+    ClientSPA->>Auth0SPA: Authenticate user
+    Auth0SPA-->>ClientSPA: Auth0 issues ID Token
+
+    ClientSPA->>Auth0API1: Request Access Token
+    Auth0API1-->>ClientSPA: Auth0 issues Access Token for API 1
+
+    ClientSPA->>ClientBE: POST /obo-flow (Access Token for API 1)
+    Note over ClientBE: /obo-flow endpoint takes<br/>Access Token for API 1 as input
+
+    ClientBE->>Auth0API2: Exchange token (On-Behalf-Of),<br/>using Access Token for API 1
+    Auth0API2-->>ClientBE: Auth0 issues Access Token for API 2
