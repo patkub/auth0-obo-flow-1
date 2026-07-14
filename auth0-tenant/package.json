@@ -1,0 +1,17 @@
+{
+  "name": "auth0-tenant",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "a0deploy import -c auth0-config.json -i auth0-tenant",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "auth0-deploy-cli": "^8.40.0"
+  }
+}

@@ -23,3 +23,23 @@ Access Token:
   "azp": "Xk51p6Gr0QJGx8TS3fbfWaPjG2Aja4pD"
 }
 ```
+
+## Getting Started
+
+Run the server:
+```
+cd server/
+npm i
+npm start
+```
+
+Run the client:
+```
+cd client/
+npm i
+npm start
+```
+
+Open [http://localhost:5173/](http://localhost:5173/) and login.
+
+Check console output for JSON object containing downstreamAccessToken. Decode with [jwt.io](https://www.jwt.io/).
