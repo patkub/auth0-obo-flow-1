@@ -1,0 +1,18 @@
+{
+  "name": "OBO Flow API 2",
+  "identifier": "https://obo-flow-api-2/",
+  "allow_offline_access": false,
+  "skip_consent_for_verifiable_first_party_clients": true,
+  "subject_type_authorization": {
+    "user": {
+      "policy": "allow_all"
+    },
+    "client": {
+      "policy": "require_client_grant"
+    }
+  },
+  "token_lifetime": 86400,
+  "token_lifetime_for_web": 7200,
+  "signing_alg": "RS256",
+  "token_dialect": "access_token"
+}

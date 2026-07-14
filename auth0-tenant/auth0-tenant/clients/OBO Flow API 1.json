@@ -1,0 +1,38 @@
+{
+  "is_token_endpoint_ip_header_trusted": false,
+  "name": "OBO Flow API 1",
+  "is_first_party": true,
+  "oidc_conformant": true,
+  "resource_server_identifier": "https://obo-flow-api-1/",
+  "cross_origin_authentication": false,
+  "sso_disabled": false,
+  "refresh_token": {
+    "expiration_type": "non-expiring",
+    "leeway": 0,
+    "infinite_token_lifetime": true,
+    "infinite_idle_token_lifetime": true,
+    "token_lifetime": 31557600,
+    "idle_token_lifetime": 2592000,
+    "rotation_type": "non-rotating"
+  },
+  "allowed_clients": [],
+  "callbacks": [],
+  "sso": true,
+  "token_exchange": {
+    "allow_any_profile_of_type": [
+      "on_behalf_of_token_exchange"
+    ]
+  },
+  "jwt_configuration": {
+    "alg": "RS256",
+    "lifetime_in_seconds": 36000,
+    "secret_encoded": false
+  },
+  "client_aliases": [],
+  "token_endpoint_auth_method": "client_secret_post",
+  "app_type": "resource_server",
+  "grant_types": [
+    "urn:auth0:params:oauth:grant-type:token-exchange:federated-connection-access-token"
+  ],
+  "custom_login_page_on": true
+}

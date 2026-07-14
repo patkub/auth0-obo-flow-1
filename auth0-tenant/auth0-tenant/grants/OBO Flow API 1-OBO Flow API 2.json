@@ -1,0 +1,6 @@
+{
+  "client_id": "OBO Flow API 1",
+  "audience": "https://obo-flow-api-2/",
+  "subject_type": "user",
+  "allow_all_scopes": true
+}
