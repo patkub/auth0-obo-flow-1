@@ -4,7 +4,7 @@ Auth0 tenant configuration.
 
 ## Dev Setup
 
-Prerequisites: [Node.js v22 LTS](https://nodejs.org/en/download), [pnpm](https://pnpm.io/installation)
+Prerequisites: [Node.js v22 LTS](https://nodejs.org/en/download)
 
 Install dependencies
 
