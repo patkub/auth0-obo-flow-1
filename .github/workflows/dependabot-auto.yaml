@@ -39,7 +39,7 @@ jobs:
 
       # Biome migrate
       - name: Biome migrate
-        run: npm biome migrate --write
+        run: npx biome migrate --write
 
       # Test Auth0 OBO Flow
       - name: Test Auth0 OBO Flow
