@@ -28,7 +28,7 @@ jobs:
           persist-credentials: true
 
       - name: Use Node.js 22.x
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
           cache: "npm"
@@ -39,7 +39,7 @@ jobs:
 
       # Biome migrate
       - name: Biome migrate
-        run: npm biome migrate --write
+        run: npx biome migrate --write
 
       # Test Auth0 OBO Flow
       - name: Test Auth0 OBO Flow
