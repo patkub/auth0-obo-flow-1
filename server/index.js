@@ -1,5 +1,6 @@
 
 import { ApiClient } from '@auth0/auth0-api-js';
+import * as jose from 'jose';
 import express from 'express';
 import cors from 'cors';
 
@@ -13,6 +14,36 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
+
+/**
+ * Validates an access token against the Auth0 JSON Web Key Set (JWKS).
+ * 
+ * @param {string} accessToken The access token to validate.
+ * 
+ * @returns {Object} JSON { isValid: true, payload }
+ *   Returned when the Auth0 token exchange succeeds.
+ * 
+ * @returns {Object} JSON { isValid: false }
+ *   Returned when the Auth0 token exchange fails (e.g. invalid/expired
+ *   accessToken, misconfigured client credentials, or the downstream
+ *   audience not being authorized for this exchange).
+ */
+const validateAccessToken = async (accessToken) => {
+  const JWKS = jose.createRemoteJWKSet(new URL(`https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`))
+
+  try {
+    const { payload, protectedHeader } = await jose.jwtVerify(accessToken, JWKS, {
+      issuer: `https://${process.env.AUTH0_DOMAIN}/`,
+      audience: process.env.AUTH0_API_AUDIENCE,
+    })
+    // console.log('JWT is valid. Payload:', payload)
+    // console.log('JWT header:', protectedHeader)
+    return { isValid: true, payload, protectedHeader };
+  } catch (err) {
+    console.error('Token validation failed:', err);
+    return { isValid: false };
+  }
+}
 
 /**
  * POST /obo-flow
@@ -38,6 +69,9 @@ app.get('/', (req, res) => {
  *
  * @returns {400} JSON { error: 'accessToken is required' }
  *   Returned when accessToken is missing from the request body.
+ * 
+* @returns {401} JSON { error: 'Invalid accessToken' }
+ *   Returned when accessToken is invalid.
  *
  * @returns {502} JSON { error: 'Failed to exchange token' }
  *   Returned when the Auth0 token exchange fails (e.g. invalid/expired
@@ -57,28 +91,34 @@ app.post('/obo-flow', async (req, res) => {
     return res.status(400).json({ error: 'accessToken is required' });
   }
 
-  const apiClient = new ApiClient({
-    domain: process.env.AUTH0_DOMAIN,
-    clientId: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    audience: process.env.AUTH0_API_AUDIENCE,
-  });
-
   try {
+    const { isValid, payload, protectedHeader } = await validateAccessToken(accessToken);
+
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid accessToken' });
+    }
+
+    const apiClient = new ApiClient({
+      domain: process.env.AUTH0_DOMAIN,
+      clientId: process.env.AUTH0_CLIENT_ID,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      audience: process.env.AUTH0_API_AUDIENCE,
+    });
+
     const downstreamAccessToken = await apiClient.getTokenOnBehalfOf(accessToken, {
       audience: process.env.AUTH0_DOWNSTREAM_API_AUDIENCE,
       // Optional scopes
       scope: process.env.AUTH0_DOWNSTREAM_API_SCOPES,
     });
 
-    res.json({
+    return res.json({
       success: true,
       accessToken: accessToken,
       downstreamAccessToken: downstreamAccessToken,
     });
   } catch (err) {
     console.error('Token exchange failed:', err);
-    res.status(502).json({ error: 'Failed to exchange token' });
+    return res.status(502).json({ error: 'Failed to exchange token' });
   }
 });
 
