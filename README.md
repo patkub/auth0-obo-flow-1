@@ -16,7 +16,6 @@ Open [http://localhost:5173/](http://localhost:5173/) and login.
 Check console output for OBO Flow Response JSON object containing downstreamAccessToken. Decode with [jwt.io](https://www.jwt.io/).
 
 Downstream Access Token:
-
 ```json
 {
   "iss": "https://dev-8jc54ej0kls418wv.us.auth0.com/",

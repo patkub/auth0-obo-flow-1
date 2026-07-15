@@ -7,8 +7,15 @@ import cors from 'cors';
 const app = express();
 
 // This enables CORS for all routes and all origins
-app.use(cors());
+// app.use(cors());
 
+// This enables CORS for all routes, but only allows requests from the specified origins
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(','),
+  credentials: true
+}));
+
+// This middleware is used to parse incoming JSON requests and make the data available in req.body
 app.use(express.json());
 
 app.get('/', (req, res) => {

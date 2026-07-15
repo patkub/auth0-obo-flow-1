@@ -4,8 +4,11 @@ Exposes an endpoint `http://localhost:3000/obo-flow` which takes an accessToken 
 
 # Setup
 
-Create `.env` with:
+Reference `.env.example` and create `.env` with:
 ```bash
+# Allow requests from the specified origins
+ALLOWED_ORIGINS=http://localhost:5173
+
 # Auth0 tenant domain
 AUTH0_DOMAIN=
 # obo-flow-api-1 Custom API Client CLIENT_ID
