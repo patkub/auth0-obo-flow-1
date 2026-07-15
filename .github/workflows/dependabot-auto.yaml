@@ -11,6 +11,9 @@ jobs:
     # Only run this job for Dependabot PRs
     if: ${{ github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./auth0-tenant
     permissions:
       # Give the default GITHUB_TOKEN write permission
       # to commit and push the changed files back to the repository.
@@ -23,9 +26,6 @@ jobs:
           # Value already defaults to true, but `persist-credentials` is required
           # to push new commits to the repository.
           persist-credentials: true
-
-      - name: Use pnpm
-        uses: pnpm/action-setup@v6
 
       - name: Use Node.js 22.x
         uses: actions/setup-node@v6
