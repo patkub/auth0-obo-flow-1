@@ -1,6 +1,5 @@
 # Build
-#   - Tests Auth0 Passwordless Action
-#   - Validates Terraform configuration
+#   - Tests Auth0 OBO Flow Action
 
 name: Build
 
