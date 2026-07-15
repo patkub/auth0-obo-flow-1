@@ -12,7 +12,7 @@ VITE_AUTH0_DOMAIN=
 VITE_AUTH0_CLIENT_ID=
 # Resource server API audience for OBO Flow API 1
 VITE_API_IDENTIFIER_URI=
-# Endpoint for OAuth 2.0 Token Exchange ("On-Behalf-Of") flow.
+# Endpoint for OAuth 2.0 Token Exchange ("On-Behalf-Of") flow
 VITE_OBO_FLOW_ENDPOINT=http://localhost:3000/obo-flow
 ```
 

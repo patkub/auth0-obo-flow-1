@@ -13,14 +13,14 @@ npm install
 ```
 
 Lint
-- `npm lint` - Lint with biome and apply changes
-- `npm lint:check` - Check linting with biome
-- `npm format` - Format with biome and apply changes
-- `npm format:check` - Check formatting with biome
+- `npm run lint` - Lint with biome and apply changes
+- `npm run lint:check` - Check linting with biome
+- `npm run format` - Format with biome and apply changes
+- `npm run format:check` - Check formatting with biome
 
 Run tests
-- `npm test` - Run unit tests
-- `npm test:watch` - Automatically re-run tests when files change
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Automatically re-run tests when files change
 
 ## Deploy
 

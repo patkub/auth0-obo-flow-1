@@ -67,7 +67,8 @@ app.post('/obo-flow', async (req, res) => {
   try {
     const downstreamAccessToken = await apiClient.getTokenOnBehalfOf(accessToken, {
       audience: process.env.AUTH0_DOWNSTREAM_API_AUDIENCE,
-      // scope: 'read:private',  // Optional
+      // Optional scopes
+      scope: process.env.AUTH0_DOWNSTREAM_API_SCOPES,
     });
 
     res.json({

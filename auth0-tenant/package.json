@@ -9,6 +9,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "a0deploy import -c auth0-config.json -i auth0-tenant",
+    "export": "a0deploy export -c auth0-config.json -o exported-tenant -f directory",
     "lint": "biome lint --write --unsafe",
     "lint:check": "biome lint",
     "format": "biome format --write",
