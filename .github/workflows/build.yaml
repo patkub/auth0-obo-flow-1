@@ -36,4 +36,3 @@ jobs:
       # Test Auth0 OBO Flow
       - name: Test Auth0 OBO Flow
         uses: ./.github/actions/test-obo-flow
-

@@ -11,7 +11,10 @@ multi-ecosystem-groups:
 updates:
   # npm (Node.js) dependencies
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/auth0-tenant"
+      - "/client"
+      - "/server"
     patterns: ["*"]
     multi-ecosystem-group: "dependencies"
 
