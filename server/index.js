@@ -6,16 +6,16 @@ import cors from 'cors';
 
 const app = express();
 
-// This enables CORS for all routes and all origins
+// Enables CORS for all routes and all origins
 // app.use(cors());
 
-// This enables CORS for all routes, but only allows requests from the specified origins
+// Enables CORS for all routes, but only allows requests from the specified origins
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(','),
   credentials: true
 }));
 
-// This middleware is used to parse incoming JSON requests and make the data available in req.body
+// Used to parse incoming JSON requests and make the data available in req.body
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -23,21 +23,57 @@ app.get('/', (req, res) => {
 });
 
 /**
- * Validates an access token against the Auth0 JSON Web Key Set (JWKS).
+ * Remote JSON Web Key Set (JWKS) for the Auth0 tenant, used by `jose.jwtVerify`
+ * to validate the signature of incoming access tokens.
+ *
+ * Created once at module load and reused across requests. `jose`'s
+ * `createRemoteJWKSet` caches the fetched keys internally, so reusing this
+ * single instance (rather than recreating it per-request) avoids refetching
+ * the JWKS on every token validation.
+ *
+ * @constant
+ * @type {jose.JWTVerifyGetKey}
+ * @requires process.env.AUTH0_DOMAIN
+ */
+const JWKS = jose.createRemoteJWKSet(new URL(`https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`));
+
+/**
+ * Instance of the Auth0 API client, which is used to perform the token exchange (On-Behalf-Of flow) with Auth0.
+ *
+ * @constant
+ * @type {ApiClient}
+ * @requires process.env.AUTH0_DOMAIN
+ * @requires process.env.AUTH0_CLIENT_ID
+ * @requires process.env.AUTH0_CLIENT_SECRET
+ * @requires process.env.AUTH0_API_AUDIENCE
+ */
+const apiClient = new ApiClient({
+  domain: process.env.AUTH0_DOMAIN,
+  clientId: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
+  audience: process.env.AUTH0_API_AUDIENCE,
+});
+
+/**
+ * Validates an access token's signature and claims against the Auth0 JSON Web Key Set (JWKS).
  * 
+ * Uses {@link JWKS}) Remote JSON Web Key Set (JWKS).
+ *
  * @param {string} accessToken The access token to validate.
- * 
- * @returns {Object} JSON { isValid: true, payload }
- *   Returned when the Auth0 token exchange succeeds.
- * 
- * @returns {Object} JSON { isValid: false }
- *   Returned when the Auth0 token exchange fails (e.g. invalid/expired
- *   accessToken, misconfigured client credentials, or the downstream
- *   audience not being authorized for this exchange).
+ *
+ * @returns {Promise<Object>} JSON { isValid: true, payload, protectedHeader }
+ *   Returned when the token's signature and claims (issuer/audience) verify
+ *   successfully. `payload` is the decoded JWT payload and `protectedHeader`
+ *   is the decoded JWT header.
+ *
+ * @returns {Promise<Object>} JSON { isValid: false }
+ *   Returned when verification fails (e.g. invalid/expired/malformed
+ *   accessToken, signature mismatch, or issuer/audience mismatch).
+ *
+ * @requires process.env.AUTH0_DOMAIN
+ * @requires process.env.AUTH0_API_AUDIENCE
  */
 const validateAccessToken = async (accessToken) => {
-  const JWKS = jose.createRemoteJWKSet(new URL(`https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`))
-
   try {
     const { payload, protectedHeader } = await jose.jwtVerify(accessToken, JWKS, {
       issuer: `https://${process.env.AUTH0_DOMAIN}/`,
@@ -60,6 +96,9 @@ const validateAccessToken = async (accessToken) => {
  * server to call a separate downstream API on behalf of the authenticated
  * user, without the user needing to re-authenticate.
  *
+ * The incoming access token is first validated against the Auth0 JWKS (see
+ * {@link validateAccessToken}) before the token exchange is attempted.
+ *
  * @route POST /obo-flow
  *
  * @param {Object} req.body
@@ -76,20 +115,18 @@ const validateAccessToken = async (accessToken) => {
  *
  * @returns {400} JSON { error: 'accessToken is required' }
  *   Returned when accessToken is missing from the request body.
- * 
-* @returns {401} JSON { error: 'Invalid accessToken' }
- *   Returned when accessToken is invalid.
+ *
+ * @returns {401} JSON { error: 'Invalid accessToken' }
+ *   Returned when accessToken fails validation against the Auth0 JWKS
+ *   (see {@link validateAccessToken}).
  *
  * @returns {502} JSON { error: 'Failed to exchange token' }
- *   Returned when the Auth0 token exchange fails (e.g. invalid/expired
- *   accessToken, misconfigured client credentials, or the downstream
- *   audience not being authorized for this exchange).
+ *   Returned when the Auth0 On-Behalf-Of token exchange fails (e.g.
+ *   misconfigured client credentials, or the downstream audience not being
+ *   authorized for this exchange).
  *
- * @requires process.env.AUTH0_DOMAIN
- * @requires process.env.AUTH0_CLIENT_ID
- * @requires process.env.AUTH0_CLIENT_SECRET
- * @requires process.env.AUTH0_API_AUDIENCE
  * @requires process.env.AUTH0_DOWNSTREAM_API_AUDIENCE
+ * @requires process.env.AUTH0_DOWNSTREAM_API_SCOPES (optional)
  */
 app.post('/obo-flow', async (req, res) => {
   const { accessToken } = req.body;
@@ -104,13 +141,6 @@ app.post('/obo-flow', async (req, res) => {
     if (!isValid) {
       return res.status(401).json({ error: 'Invalid accessToken' });
     }
-
-    const apiClient = new ApiClient({
-      domain: process.env.AUTH0_DOMAIN,
-      clientId: process.env.AUTH0_CLIENT_ID,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET,
-      audience: process.env.AUTH0_API_AUDIENCE,
-    });
 
     const downstreamAccessToken = await apiClient.getTokenOnBehalfOf(accessToken, {
       audience: process.env.AUTH0_DOWNSTREAM_API_AUDIENCE,
